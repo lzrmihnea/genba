@@ -1,6 +1,9 @@
 services:
   postgres:
-    image: postgres:15-alpine
+    # pgvector/pgvector:pg15 is the official pgvector image built on top of
+    # postgres:15. Drop-in replacement; supplies the `vector` extension that
+    # Liquibase enables on first boot for future semantic-search work.
+    image: pgvector/pgvector:pg15
     container_name: genba-postgres
     environment:
       POSTGRES_DB: genba_db

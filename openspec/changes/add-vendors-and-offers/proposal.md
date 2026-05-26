@@ -1,0 +1,20 @@
+## Why
+Mihnea has not yet signed a general-contractor contract; he needs to capture and structure offers from multiple vendors (constructors, electric, HVAC, plumbing, suppliers) so he can compare them. Offers arrive in heterogeneous channels (PDF, WhatsApp text, email, photos of handwritten quotes, verbal in-person). Per the editable-first design principle, structured forms are the canonical input and attachments are optional supporting evidence — this proposal lays the data and UI groundwork the bid-comparison MVP depends on.
+
+## What Changes
+- **ADD**: `Vendor` entity — `{id, org_id, project_id NULL, name, contact_name, phone, email, vat_id NULL, default_retention_pct NUMERIC(5,2) NULL, notes, audit, soft-delete}`. Project-scoped vendors are allowed for one-off suppliers; most vendors are Organization-scoped and reusable across projects.
+- **ADD**: `Offer` entity — `{id, org_id, project_id FK, vendor_id FK, label, received_at, valid_until NULL, currency_code, total_amount_excl_vat NUMERIC, total_amount_incl_vat NUMERIC, status enum (DRAFT, RECEIVED, ACCEPTED, REJECTED, EXPIRED), notes, audit, soft-delete}`. Totals are derived from OfferLines and cached for fast comparison reads.
+- **ADD**: `OfferLine` entity — `{id, offer_id FK, line_order INT, label VARCHAR(512), description TEXT, qty NUMERIC, unit VARCHAR(32), unit_price NUMERIC, currency_code, vat_rate NUMERIC(5,2), line_total_excl_vat (computed), line_total_incl_vat (computed), wbs_item_id UUID NULL — populated in Phase 2, normalized_key VARCHAR(255) NULL, notes}`.
+- **ADD**: Offer + OfferLine editable forms in frontend with drawer-based line entry, keyboard navigation in the line grid, and a TSV/CSV bulk-paste textarea for spreadsheet copy-paste.
+- **ADD**: Attachment integration on Offer (uses polymorphic Attachment from `add-genba-core`). Attachment list and channel-tagged upload widget on the Offer detail page.
+- **ADD**: Status-transition logic with allowed transitions (DRAFT→RECEIVED→ACCEPTED/REJECTED/EXPIRED); reverse to DRAFT forbidden.
+- **ADD**: **Clone-offer action** — `POST /api/offers/{id}/clone` creates a new DRAFT Offer copying the source's `currency_code`, OfferLines (with fresh ids and reset `wbs_item_id`/`normalized_key`), and optionally a new `vendor_id`, `label`, `received_at`. Attachments are NOT copied. Used for: vendor revisions ("Vendor X sent v2"), creating a new offer from a baseline template, normalizing scope across offers.
+- **NO AI / OCR / PDF parsing in this change.** All structured data comes from user input via forms or TSV paste; attached files are unparsed evidence.
+
+## Impact
+- **Affected specs**: NEW capability `vendors-and-offers`.
+- **Affected code**:
+  - Backend: new packages `pxro.genba.vendor.*`, `pxro.genba.offer.*`; Liquibase changesets `db.changelog-genba-005-vendor.xml`, `db.changelog-genba-006-offer.xml`.
+  - Frontend: routes `app/projects/[id]/vendors/*` and `app/projects/[id]/offers/*`; vendor CRUD UI, Offer entry workflow with OfferLine grid component, bulk-paste textarea, AttachmentList integration.
+- **Risk**: The OfferLine grid UX is the make-or-break of usability. If entering 20 lines from a real offer takes too long, the feature fails. Mitigation: prioritize keyboard navigation (Tab between cells, Enter to add row), bulk paste from spreadsheet, and inline edit (no row-level save/cancel buttons — autosave on blur).
+- **Risk**: Computed totals on Offer can drift from OfferLines if updates aren't transactional. Mitigation: service-layer recompute under @Transactional on every OfferLine create/update/delete; integration test asserts consistency after bulk operations.

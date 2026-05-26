@@ -1,0 +1,47 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.iml
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+.turbo/
+
+# Env / secrets
+.env
+.env.local
+.env.dev
+.env.production
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local data
+uploads/
+genba-pgdata/
+
+# Build artifacts
+**/build/
+
+# Test output
+coverage/
+*.lcov

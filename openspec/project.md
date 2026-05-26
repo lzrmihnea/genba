@@ -7,12 +7,13 @@ The name comes from 現場 — Japanese for "the actual place where work happens
 
 ## Tech Stack
 - **Backend**: Spring Boot 3.1.5 (Java 17) — **independent codebase**, conventions and patterns referenced from pxro-kaisha-03 (NOT a git fork; no `cp -R`)
-- **Database**: PostgreSQL 15 with Liquibase migrations
+- **Database**: PostgreSQL 15 with **pgvector** extension (image `pgvector/pgvector:pg15`), Liquibase migrations
 - **ORM**: JPA/Hibernate with Spring Data JPA
-- **Authentication**: JWT-based with Spring Security 6 (multi-org RBAC built fresh in genba; pattern referenced from kaisha-03)
+- **Authentication**: JWT-based with Spring Security 6 (multi-org RBAC built fresh in genba; pattern referenced from kaisha-03); PATs for MCP access (Phase 5)
 - **Documentation**: Swagger/OpenAPI 3 (SpringDoc)
 - **Build**: Maven (root pom + `genba-backend` module)
 - **Frontend**: Next.js 15 + React 19 + TypeScript, Tailwind CSS, Ant Design 5, TanStack Query, Axios, next-intl for i18n
+- **LLM access layer** (Phase 5, dormant until activated): MCP server on `/mcp` (HTTP streamable transport), PAT auth from `/settings/tokens`, embedding-backed semantic search via `add-semantic-search` with pluggable provider (default local Ollama; alternatives Voyage `voyage-multilingual-2` and OpenAI `text-embedding-3-large` with Matryoshka-1024)
 - **Containerization**: Docker & Docker Compose (local-only for Layer 0; no Hetzner / Traefik / staging / production)
 
 ## Port Assignments (next available after pxro-kaisha 3000/8085/5434/8081)
@@ -91,9 +92,13 @@ The name comes from 現場 — Japanese for "the actual place where work happens
 - **No niroai / MCP dependencies in genba** (per user decision).
 
 ## External Dependencies
-- PostgreSQL 15+ (UUID generation)
+- PostgreSQL 15+ with **pgvector** extension (UUID generation, 1024-d VECTOR columns for embeddings)
 - JWT (JJWT library v0.12.3, pattern from kaisha-03)
 - next-intl (frontend i18n)
+- **Optional, dormant by default**:
+  - Ollama (local embedding provider; `ollama pull bge-m3`); if missing, semantic-search stays inactive but the rest of the app runs untouched
+  - Voyage AI API key (hosted embeddings via `voyage-multilingual-2`)
+  - OpenAI API key (hosted embeddings via `text-embedding-3-large` with `dimensions: 1024` Matryoshka truncation)
 
 ## Product Tiers (Layer 1+ — NOT in Layer 0 scope; data model must accommodate)
 - **Standard**: €9/mo or €99/yr — single user

@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: genba-backend
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/${DB_NAME:genba_db}
+    username: ${DB_USERNAME:genba_user}
+    password: ${DB_PASSWORD:genba_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        stringtype: unspecified
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    drop-first: false
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+server:
+  port: ${SERVER_PORT:8086}
+
+logging:
+  level:
+    liquibase: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:local-dev-genba-secret-key-must-be-at-least-32-chars-long}
+  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION:1800000}
+  refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION:2592000000}
+
+# CORS (dev — permissive)
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3001}
+
+# Genba app configuration
+genba:
+  uploads:
+    path: ${GENBA_UPLOADS_PATH:./uploads}
+    max-file-size-bytes: ${GENBA_UPLOADS_MAX_BYTES:26214400}
+  base-url: ${APP_BASE_URL:http://localhost:3001}
+
+# Seed admin (only consumed by Liquibase seed changeset; missing values disable seeding)
+seed:
+  admin-email: ${GENBA_SEED_EMAIL:}
+  admin-password: ${GENBA_SEED_PASSWORD:}
+  organization-name: ${GENBA_SEED_ORG_NAME:Mihnea's Builds}

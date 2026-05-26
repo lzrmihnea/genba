@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Seed Organization + admin User from env vars.
+        BCrypt hash is computed at boot by a Spring-side bootstrap component
+        (admin seed cannot live entirely in SQL because BCrypt rounds depend on the encoder).
+        This changeset only creates an Organization placeholder so the FK exists.
+        The actual User row + UserOrganization link are created by the application's seed bean
+        once SecurityConfig has wired BCryptPasswordEncoder.
+
+        See: eu.px.genba.auth.bootstrap.SeedAdminUserRunner (added in section 8 of tasks.md)
+    -->
+
+    <changeSet id="genba-auth-005-seed-org" author="mihnea">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM organization</sqlCheck>
+        </preConditions>
+
+        <insert tableName="organization">
+            <column name="name" value="Mihnea's Builds"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="organization">
+                <where>name = 'Mihnea''s Builds'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

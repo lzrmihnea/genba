@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Extends Organization with locale defaults. Per the modular-templates
+        principle, these are DEFAULTS new Projects inherit at creation time —
+        not hard constraints. A Project may freely override them or replace
+        its cloned-from-template structure.
+
+        permit_workflow_template_id is nullable here; the FK constraint and
+        target table arrive in Phase 3 (add-permit-workflow).
+    -->
+
+    <changeSet id="genba-core-001-org-locale" author="mihnea">
+        <addColumn tableName="organization">
+            <column name="country_code" type="VARCHAR(2)" defaultValue="RO">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(3)" defaultValue="RON">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vat_regime" type="VARCHAR(32)" defaultValue="RO_STANDARD">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permit_workflow_template_id" type="UUID"/>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="organization" columnName="permit_workflow_template_id"/>
+            <dropColumn tableName="organization" columnName="vat_regime"/>
+            <dropColumn tableName="organization" columnName="currency_code"/>
+            <dropColumn tableName="organization" columnName="country_code"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

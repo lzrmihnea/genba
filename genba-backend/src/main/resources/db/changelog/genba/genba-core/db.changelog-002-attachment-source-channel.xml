@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="genba-core-002-attachment-source-channel" author="mihnea">
+        <createTable tableName="attachment_source_channel">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="org_id" type="UUID">
+                <constraints nullable="true"
+                             foreignKeyName="fk_attachment_source_channel_org"
+                             references="organization(id)"/>
+            </column>
+            <column name="code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label_en" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label_ro" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="system_managed" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sort_order" type="INT" defaultValueNumeric="100">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <!--
+            UNIQUE (org_id, code) for org-scoped custom rows; (code) WHERE org_id IS NULL
+            for the system rows. Liquibase doesn't have first-class partial-unique
+            support across vendors, so we declare both as plain SQL for Postgres.
+        -->
+        <sql>
+            CREATE UNIQUE INDEX uq_attachment_source_channel_org_code
+                ON attachment_source_channel (org_id, code)
+                WHERE org_id IS NOT NULL AND deleted_at IS NULL;
+            CREATE UNIQUE INDEX uq_attachment_source_channel_system_code
+                ON attachment_source_channel (code)
+                WHERE org_id IS NULL AND deleted_at IS NULL;
+        </sql>
+
+        <rollback>
+            <sql>DROP INDEX IF EXISTS uq_attachment_source_channel_system_code;</sql>
+            <sql>DROP INDEX IF EXISTS uq_attachment_source_channel_org_code;</sql>
+            <dropTable tableName="attachment_source_channel"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="genba-core-002-attachment-source-channel-seed" author="mihnea">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM attachment_source_channel WHERE system_managed = TRUE
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="pdf"/>
+            <column name="label_en" value="PDF"/>
+            <column name="label_ro" value="PDF"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="10"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="image"/>
+            <column name="label_en" value="Image"/>
+            <column name="label_ro" value="Imagine"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="20"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="email"/>
+            <column name="label_en" value="Email"/>
+            <column name="label_ro" value="Email"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="30"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="whatsapp"/>
+            <column name="label_en" value="WhatsApp"/>
+            <column name="label_ro" value="WhatsApp"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="40"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="voice"/>
+            <column name="label_en" value="Voice note"/>
+            <column name="label_ro" value="Mesaj vocal"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="50"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="verbal"/>
+            <column name="label_en" value="Verbal / phone"/>
+            <column name="label_ro" value="Verbal / telefon"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="60"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="link"/>
+            <column name="label_en" value="Link"/>
+            <column name="label_ro" value="Link"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="70"/>
+        </insert>
+        <insert tableName="attachment_source_channel">
+            <column name="org_id"/>
+            <column name="code" value="other"/>
+            <column name="label_en" value="Other"/>
+            <column name="label_ro" value="Altul"/>
+            <column name="system_managed" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="999"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="attachment_source_channel">
+                <where>system_managed = TRUE</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

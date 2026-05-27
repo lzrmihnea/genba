@@ -1,7 +1,9 @@
 # auth-foundation
 
 Canonical specification. Last updated 2026-05-27 via the archived
-[`add-auth-foundation`](../../changes/archive/2026-05-27-add-auth-foundation/) change.
+[`add-auth-foundation`](../../changes/archive/2026-05-27-add-auth-foundation/) +
+[`add-genba-core`](../../changes/archive/2026-05-27-add-genba-core/)
+(Organization Tenant Boundary requirement extended with locale fields).
 
 ## Requirements
 
@@ -36,15 +38,27 @@ The system SHALL issue JWT access tokens and refresh tokens on successful login.
 - **THEN** the system SHALL return 401 with i18n key `auth.error.tokenExpired`, prompting the client to refresh
 
 ### Requirement: Organization Tenant Boundary
-The system SHALL provide an `Organization` entity that is the multi-tenant boundary. Every domain entity owned by an Organization SHALL reference `org_id`. Users MAY belong to multiple Organizations through `UserOrganization` membership rows carrying an `org_role` ∈ {OWNER, ADMIN, MEMBER, GUEST}.
+The system SHALL provide an `Organization` entity that is the multi-tenant boundary, with locale-keyed defaults (`country_code`, `currency_code`, `vat_regime`, `permit_workflow_template_id`) so that internationalization is data-driven and new Projects inherit sensible starting defaults per the modular-templates principle. Every domain entity owned by an Organization SHALL reference `org_id`. Users MAY belong to multiple Organizations through `UserOrganization` membership rows carrying an `org_role` ∈ {OWNER, ADMIN, MEMBER, GUEST}.
 
-#### Scenario: Authentication response includes memberships
+#### Scenario: Authentication response includes memberships and locale
 - **WHEN** a User logs in and is a member of 2 Organizations
-- **THEN** the response SHALL include `organizations: [{id, name, org_role}, ...]`; the active org SHALL be picked client-side and sent on subsequent requests via JWT claim or `X-Genba-Org-Id` header
+- **THEN** the response SHALL include `organizations: [{id, name, country_code, currency_code, vat_regime, org_role}, ...]`; the active org SHALL be picked client-side and sent on subsequent requests via JWT claim or `X-Genba-Org-Id` header
 
 #### Scenario: Cross-organization data isolation
 - **WHEN** a User in Organization X requests an endpoint that returns Organization Y's data
 - **THEN** the system SHALL filter by the active org from the request; data not belonging to that org MUST NOT appear in responses (404 for direct id lookups)
+
+#### Scenario: New Organization defaults to Romanian locale
+- **WHEN** an Organization is created without explicit locale fields
+- **THEN** the system SHALL set `country_code = 'RO'`, `currency_code = 'RON'`, `vat_regime = 'RO_STANDARD'`, `permit_workflow_template_id = NULL`
+
+#### Scenario: Organization API exposes locale
+- **WHEN** GET /api/organizations/{id} is called
+- **THEN** the response SHALL include all four locale fields
+
+#### Scenario: permit_workflow_template_id is a default, not a constraint
+- **WHEN** a User creates a new Project under an Organization with `permit_workflow_template_id = T`
+- **THEN** the Project SHALL be initialized with a cloned copy of template T's structure (in Phase 3 once templates ship); the user MAY freely modify or replace the Project's per-Project permit structure without affecting the Organization's default
 
 ### Requirement: i18n Framework
 The system SHALL support two languages (English and Romanian) end-to-end: frontend UI strings via `next-intl` with `messages/en.json` and `messages/ro.json` bundles; backend response messages via Spring `MessageSource` with `messages_en.properties` and `messages_ro.properties`. The selected language SHALL persist per User in `preferred_locale` and be detectable via `Accept-Language` header for anonymous/login flows.

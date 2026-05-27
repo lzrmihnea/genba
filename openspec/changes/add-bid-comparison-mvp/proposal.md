@@ -34,7 +34,7 @@ This is the ASAP feature. Mihnea has not yet signed his GC contract; he needs to
 ## Impact
 - **Affected specs**: NEW capability `bid-comparison`.
 - **Affected code**:
-  - Backend: new package `pxro.genba.compare.*`; Liquibase changeset `db.changelog-genba-007-compare.xml` adding `offer_line_match_group` and `match_group_line`.
+  - Backend: new package `eu.px.genba.compare.*`; Liquibase changeset `db.changelog-genba-007-compare.xml` adding `offer_line_match_group` and `match_group_line`.
   - Frontend: new route `app/projects/[id]/compare/page.tsx` with a side-by-side grid component (frozen first column, dynamic offer columns); match-mode interaction layer.
 - **Risk**: The match-interaction UX is the make-or-break of this MVP. If users find it tedious to manually pair lines across 3 offers, the feature fails. Mitigation:
   - Keyboard-first matching (M to enter match mode, click-click-Enter).

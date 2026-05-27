@@ -34,7 +34,7 @@ The name comes from 現場 — Japanese for "the actual place where work happens
 ### Code Style (pattern from kaisha-03)
 - Lombok annotations (@Data, @NoArgsConstructor, @AllArgsConstructor, @Slf4j)
 - Explicit imports (no wildcards)
-- Package by layer: `pxro.genba.<feature>.{controller, service, repository, entity, dto, mapper}` + cross-cutting `security`, `config`, `enums`, `i18n`, `common`
+- Package by layer: `eu.px.genba.<feature>.{controller, service, repository, entity, dto, mapper}` + cross-cutting `security`, `config`, `enums`, `i18n`, `common`
 - ALL identifiers in English
 
 ### Architecture Patterns (referenced from kaisha-03)

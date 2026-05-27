@@ -9,7 +9,7 @@ Genba is being built as an independent codebase (not a git fork of kaisha) but m
 - **ADD**: Liquibase master changelog `db.changelog-master.xml` referencing modular changesets per change-proposal.
 - **ADD**: i18n framework setup — `next-intl` configuration on frontend with EN+RO bundle stubs (`messages/en.json`, `messages/ro.json`); Spring `MessageSource` on backend with `messages_en.properties` + `messages_ro.properties`; `Accept-Language` header parsing.
 - **ADD**: Entities `User`, `Role`, `Permission`, `Organization`, `UserOrganization` (membership join with `org_role` enum: OWNER, ADMIN, MEMBER, GUEST). Liquibase changesets `db.changelog-genba-auth-001` through `-004`.
-- **ADD**: Spring Security 6 configuration — stateless JWT auth, BCrypt password encoding, `JwtAuthFilter`, role-based method security via `@PreAuthorize`. Pattern referenced from kaisha-03's `pxro.kaisha.security.*` (reimplemented in `pxro.genba.security.*`).
+- **ADD**: Spring Security 6 configuration — stateless JWT auth, BCrypt password encoding, `JwtAuthFilter`, role-based method security via `@PreAuthorize`. Pattern referenced from kaisha-03's `pxro.kaisha.security.*` (reimplemented in `eu.px.genba.security.*`).
 - **ADD**: Auth REST endpoints — `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`, `POST /api/auth/refresh`. No registration endpoint in L0 (user is seeded).
 - **ADD**: Frontend auth scaffolding — `AuthProvider`, `useAuth` hook, `<AuthGuard>` route protection, axios interceptor injecting JWT + handling 401-refresh, login page at `/login`.
 - **ADD**: Seed Liquibase changeset `db.changelog-genba-auth-005-seed.xml` populating one Organization (`Mihnea's Builds`, locale RO/RON/RO_STANDARD) and one User (Mihnea, OWNER) with password set from env var at first boot.
@@ -20,7 +20,7 @@ Genba is being built as an independent codebase (not a git fork of kaisha) but m
 ## Impact
 - **Affected specs**: NEW capability `auth-foundation`.
 - **Affected code**:
-  - New backend modules: `pxro.genba.{user, organization, role, permission, security, auth, i18n, config, common}`.
+  - New backend modules: `eu.px.genba.{user, organization, role, permission, security, auth, i18n, config, common}`.
   - New frontend: `app/{login,layout}/`, `lib/{api, auth, i18n}/`, `components/{AuthProvider, AuthGuard}`.
   - Root infra: `pom.xml`, `docker-compose.yml`, `start.sh`, `.gitignore`, `README.md`.
 - **Risk**: Reimplementing auth instead of forking adds engineering time vs. inheriting kaisha's mature pieces. Mitigation: cherry-pick specific kaisha-03 files as patterns (open them side-by-side, reimplement equivalent in genba's structure); avoid line-by-line copy that would confuse the "independent codebase" promise.

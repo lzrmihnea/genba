@@ -14,7 +14,7 @@ Mihnea has not yet signed a general-contractor contract; he needs to capture and
 ## Impact
 - **Affected specs**: NEW capability `vendors-and-offers`.
 - **Affected code**:
-  - Backend: new packages `pxro.genba.vendor.*`, `pxro.genba.offer.*`; Liquibase changesets `db.changelog-genba-005-vendor.xml`, `db.changelog-genba-006-offer.xml`.
+  - Backend: new packages `eu.px.genba.vendor.*`, `eu.px.genba.offer.*`; Liquibase changesets `db.changelog-genba-005-vendor.xml`, `db.changelog-genba-006-offer.xml`.
   - Frontend: routes `app/projects/[id]/vendors/*` and `app/projects/[id]/offers/*`; vendor CRUD UI, Offer entry workflow with OfferLine grid component, bulk-paste textarea, AttachmentList integration.
 - **Risk**: The OfferLine grid UX is the make-or-break of usability. If entering 20 lines from a real offer takes too long, the feature fails. Mitigation: prioritize keyboard navigation (Tab between cells, Enter to add row), bulk paste from spreadsheet, and inline edit (no row-level save/cancel buttons — autosave on blur).
 - **Risk**: Computed totals on Offer can drift from OfferLines if updates aren't transactional. Mitigation: service-layer recompute under @Transactional on every OfferLine create/update/delete; integration test asserts consistency after bulk operations.

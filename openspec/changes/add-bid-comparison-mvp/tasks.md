@@ -1,7 +1,7 @@
 ## 1. MatchGroup data model
 - [ ] 1.1 Liquibase changeset `db.changelog-genba-007-compare.xml`: `offer_line_match_group` table — `id UUID PK`, `project_id UUID FK NOT NULL`, `label VARCHAR(512) NOT NULL`, `notes TEXT`, audit. Index `(project_id)`.
 - [ ] 1.2 `match_group_line` join table — `match_group_id UUID FK NOT NULL`, `offer_line_id UUID FK NOT NULL UNIQUE`, PRIMARY KEY (match_group_id, offer_line_id). The UNIQUE on `offer_line_id` enforces one-group-per-line.
-- [ ] 1.3 Entity, repository, service, controller, DTO under `pxro.genba.compare.*`.
+- [ ] 1.3 Entity, repository, service, controller, DTO under `eu.px.genba.compare.*`.
 - [ ] 1.4 Endpoints: `POST /api/projects/{id}/match-groups` `{lines: [...], label?}` (create + add initial lines atomically), `POST /api/match-groups/{id}/lines` (add to existing), `DELETE /api/match-groups/{id}/lines/{lineId}` (remove; if group has ≤1 line after, dissolve), `PUT /api/match-groups/{id}` (label/notes), `DELETE /api/match-groups/{id}` (dissolve fully).
 - [ ] 1.5 Integration test: create 3 offers × 4 lines, create match group spanning 2 lines, attempt to add a line already in another group → 409, remove a line to leave 1 → group dissolves, create empty group with single line via direct API → 422 (require ≥2 to create).
 

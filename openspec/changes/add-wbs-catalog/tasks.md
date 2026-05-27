@@ -1,6 +1,6 @@
 ## 1. WBSTemplate (library)
 - [ ] 1.1 Liquibase changeset `db.changelog-genba-wbs-001-template.xml`: `wbs_template` table — `id UUID PK`, `org_id UUID FK NULL`, `code VARCHAR(64) NOT NULL`, `name_en VARCHAR(255) NOT NULL`, `name_ro VARCHAR(255) NOT NULL`, `description TEXT`, `system_managed BOOLEAN NOT NULL DEFAULT FALSE`, `project_type_code VARCHAR(64) NULL`, `created_at`, `updated_at`, `created_by UUID FK NULL`, `deleted_at NULL`. UNIQUE(org_id, code); partial UNIQUE(code) WHERE org_id IS NULL.
-- [ ] 1.2 Entity + repository + service + DTO + controller under `pxro.genba.wbs.template.*`.
+- [ ] 1.2 Entity + repository + service + DTO + controller under `eu.px.genba.wbs.template.*`.
 - [ ] 1.3 Endpoints: `GET /api/wbs-templates` (system + active org's custom + system_managed filter), `GET /api/wbs-templates/{id}`, `POST /api/wbs-templates` (org-admin only; org-scoped row), `PUT /api/wbs-templates/{id}` (org-admin only; reject if `system_managed`), `DELETE /api/wbs-templates/{id}` (soft delete; reject system).
 
 ## 2. WBSTemplateItem (template tree nodes)
@@ -10,7 +10,7 @@
 
 ## 3. WBSItem (per-Project clones)
 - [ ] 3.1 Liquibase changeset `db.changelog-genba-wbs-003-project-wbs.xml`: `wbs_item` table — `id UUID PK`, `project_id UUID FK NOT NULL ON DELETE CASCADE`, `parent_id UUID FK NULL`, `code VARCHAR(32) NOT NULL`, `name VARCHAR(255) NOT NULL`, `default_unit VARCHAR(32) NULL`, `sort_order INT NOT NULL DEFAULT 100`, `depth INT NOT NULL`, `source_template_item_id UUID FK NULL`, `notes TEXT`, `embedding VECTOR(1024) NULL`, `embedding_source_hash VARCHAR(64) NULL`, `created_at`, `updated_at`, `deleted_at NULL`. Indexes (`project_id`), (`project_id, parent_id`).
-- [ ] 3.2 Entity + repository + service + DTO + controller under `pxro.genba.wbs.item.*`.
+- [ ] 3.2 Entity + repository + service + DTO + controller under `eu.px.genba.wbs.item.*`.
 - [ ] 3.3 Endpoints: `GET /api/projects/{id}/wbs` (tree or flat), `POST /api/projects/{id}/wbs` (add node), `PUT /api/wbs/{id}` (rename/move via parent_id change), `PATCH /api/wbs/{id}/order` (sort_order), `DELETE /api/wbs/{id}` (cascade soft-delete subtree).
 - [ ] 3.4 Service `seedFromTemplate(projectId, templateId)`: clone the entire WBSTemplateItem tree into `wbs_item` rows; copy `name_en` OR `name_ro` based on the Org's `country_code` (RO orgs get RO names by default; others get EN); preserve `code`, `default_unit`, `sort_order`, `depth`; populate `source_template_item_id` for traceability. Single transaction.
 - [ ] 3.5 Endpoint `POST /api/projects/{id}/wbs/seed-from-template/{templateId}`: REPLACE existing WBS for the project (with confirmation flag in body) OR APPEND if requested.

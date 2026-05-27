@@ -19,13 +19,13 @@
 ## 3. User + Role + Permission entities
 - [ ] 3.1 Liquibase changeset `db.changelog-genba-auth-001-user.xml`: `app_user` table (`id UUID PK`, `email VARCHAR(255) UNIQUE NOT NULL`, `password_hash VARCHAR(255) NOT NULL`, `display_name VARCHAR(255)`, `preferred_locale VARCHAR(8) NOT NULL DEFAULT 'en'`, `active BOOLEAN NOT NULL DEFAULT TRUE`, `created_at`, `updated_at`, `deleted_at NULL`).
 - [ ] 3.2 Liquibase changeset `db.changelog-genba-auth-002-role.xml`: `role` table (`id UUID PK`, `code VARCHAR(64) UNIQUE NOT NULL`, `name_en`, `name_ro`, `system_managed BOOLEAN NOT NULL DEFAULT TRUE`); `permission` table; `role_permission` join.
-- [ ] 3.3 Entities + repositories + DTOs under `pxro.genba.user.*`, `pxro.genba.role.*`, `pxro.genba.permission.*`.
+- [ ] 3.3 Entities + repositories + DTOs under `eu.px.genba.user.*`, `eu.px.genba.role.*`, `eu.px.genba.permission.*`.
 - [ ] 3.4 Seed standard roles (SUPER_ADMIN, OWNER, ADMIN, MEMBER, GUEST) and permissions via Liquibase data changeset.
 
 ## 4. Organization + UserOrganization (multi-tenant + RBAC)
 - [ ] 4.1 Liquibase changeset `db.changelog-genba-auth-003-org.xml`: `organization` table (`id UUID PK`, `name VARCHAR(255) NOT NULL`, `created_at`, `updated_at`, `deleted_at NULL`). Locale fields (country_code, currency_code, vat_regime, permit_workflow_template_id) added by `add-genba-core`.
 - [ ] 4.2 Liquibase changeset `db.changelog-genba-auth-004-user-org.xml`: `user_organization` (`id UUID PK`, `user_id FK NOT NULL`, `org_id FK NOT NULL`, `org_role VARCHAR(32) NOT NULL` ∈ {OWNER, ADMIN, MEMBER, GUEST}, `created_at`, UNIQUE (`user_id`, `org_id`)).
-- [ ] 4.3 Entities + repositories + DTOs under `pxro.genba.organization.*`.
+- [ ] 4.3 Entities + repositories + DTOs under `eu.px.genba.organization.*`.
 - [ ] 4.4 Authentication response includes the user's UserOrganization memberships so the frontend can render an Organization switcher.
 
 ## 5. Spring Security 6 + JWT

@@ -14,7 +14,7 @@ With `add-auth-foundation` in place (Spring Boot + Next.js scaffolding, User, Or
 ## Impact
 - **Affected specs**: NEW capability `genba-core`. MODIFIED capability `auth-foundation` (Organization gains locale fields).
 - **Affected code**:
-  - New backend packages: `pxro.genba.project.*`, `pxro.genba.attachment.*`.
+  - New backend packages: `eu.px.genba.project.*`, `eu.px.genba.attachment.*`.
   - New Liquibase changesets: `db.changelog-genba-core-001-org-locale.xml`, `-002-project.xml`, `-003-attachment-source-channel.xml`, `-004-attachment.xml`.
   - New Next.js routes: `app/(app)/projects/*`; reusable `<AttachmentList />`, `<AttachmentUpload />`, `<ChannelSelector />` components.
   - Modified: `Organization` entity (added 4 fields) — backward-compatible via DEFAULTs.

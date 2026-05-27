@@ -16,8 +16,8 @@ Phase 1's bid comparison uses user-driven MatchGroup pairing — fine for the fi
 ## Impact
 - **Affected specs**: NEW capability `wbs-catalog`. MODIFIED capability `bid-comparison` (comparison query and while-entering recommendations prefer WBS).
 - **Affected code**:
-  - New backend packages: `pxro.genba.wbs.template.*`, `pxro.genba.wbs.item.*`.
-  - Modified: `pxro.genba.offer.OfferLine` (add `wbs_item_id` FK), `pxro.genba.compare.*` (group-by upgrades).
+  - New backend packages: `eu.px.genba.wbs.template.*`, `eu.px.genba.wbs.item.*`.
+  - Modified: `eu.px.genba.offer.OfferLine` (add `wbs_item_id` FK), `eu.px.genba.compare.*` (group-by upgrades).
   - New Liquibase changesets: `db.changelog-genba-wbs-001-template.xml`, `-002-template-item.xml`, `-003-project-wbs.xml`, `-004-offerline-wbs-fk.xml`, `-005-ro-default-seed.xml`.
   - New frontend routes: `app/(app)/settings/wbs-templates/*` (org-admin CRUD), `app/(app)/projects/[id]/wbs/*` (per-project editor).
   - Modified: OfferLine grid in Offer entry — WBS picker per line.

@@ -28,22 +28,27 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * migrates from clean, SeedAdminUserRunner provisions the test admin, then we
  * exercise login → me → refresh and a couple of error paths.
  *
- * <p>Currently {@code @Disabled} because TestContainers 1.19.7 (the version
- * pinned in pom.xml) fails to parse the {@code /info} response from Docker
- * Desktop 4.60+, throwing {@code Status 400}. Two paths to re-enable:
+ * <p>Requires a reachable Docker daemon. {@code @Disabled} by default because
+ * Docker Desktop 4.60+ (this Mac's version) proxies its socket through a
+ * mode that returns a stub {@code /info} response with Status 400 — even on
+ * TestContainers 1.21.3 (the current latest). Two ways to enable locally:
  *
  * <ol>
- *   <li>Bump {@code testcontainers.version} in pom.xml to 1.20.x or later
- *       (which fixes the Info-response parsing).</li>
- *   <li>Or run a non-Docker-Desktop runtime (Colima, Lima, OrbStack) and
- *       export {@code DOCKER_HOST=unix:///path/to/socket}.</li>
+ *   <li><b>Docker Desktop</b>: Settings → Advanced → enable "Allow the default
+ *       Docker socket to be used (requires password)". This creates the
+ *       traditional {@code /var/run/docker.sock} that TestContainers' Unix
+ *       strategy can talk to directly without going through the proxy.</li>
+ *   <li><b>Alternative runtime</b>: Colima / OrbStack / Lima with
+ *       {@code export DOCKER_HOST=unix:///path/to/socket}.</li>
  * </ol>
+ *
+ * <p>Once either is in place, remove the {@code @Disabled} annotation.
  *
  * <p>The auth flow this test exercises has been manually verified end-to-end
  * against a live pgvector PostgreSQL container during sections 5–8 bring-up:
  * login, /me, /refresh, RO/EN error localization, missing-token 401.
  */
-@Disabled("TestContainers 1.19.7 vs Docker Desktop 4.60+ incompat — see class javadoc")
+@Disabled("Docker Desktop 4.60+ proxy returns Status 400 on /info; see class javadoc")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers

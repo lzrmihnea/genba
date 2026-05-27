@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className="min-h-screen bg-neutral-50 text-neutral-900 antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AntdRegistry>{children}</AntdRegistry>
+          <AntdRegistry>
+            <AuthProvider>{children}</AuthProvider>
+          </AntdRegistry>
         </NextIntlClientProvider>
       </body>
     </html>

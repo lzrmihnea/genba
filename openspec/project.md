@@ -17,7 +17,7 @@ The name comes from 現場 — Japanese for "the actual place where work happens
 - **Containerization**: Docker & Docker Compose (local-only for Layer 0; no Hetzner / Traefik / staging / production)
 
 ## Port Assignments (next available after pxro-kaisha 3000/8085/5434/8081)
-- Frontend Next.js: **3001**
+- Frontend Next.js: **3002**
 - Backend Spring Boot: **8086**
 - PostgreSQL: **5435**
 - No Adminer service — user runs DBeaver as the DB client.

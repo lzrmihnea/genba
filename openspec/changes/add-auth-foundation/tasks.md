@@ -2,11 +2,11 @@
 - [ ] 1.1 Create root `pom.xml` (packaging pom) and `genba-backend/pom.xml` (packaging jar, parent points to root). Dependencies per kaisha-03 reference: spring-boot-starter-{web,data-jpa,security,validation,actuator}, springdoc-openapi-starter-webmvc-ui, postgresql, liquibase-core, lombok, mapstruct, jjwt 0.12.3, spring-boot-starter-test, testcontainers, mockito.
 - [ ] 1.2 `genba-backend/src/main/resources/application.yml` (common config: datasource, jpa, liquibase change-log path, server.port=8086, openapi config, jwt config block).
 - [ ] 1.3 `genba-backend/src/main/resources/application-dev.yml` (local dev overrides: log levels, dev DB credentials).
-- [ ] 1.4 Initialize Next.js 15 in `genba-frontend/`: TypeScript, App Router, Tailwind CSS, Ant Design 5; configure port 3001; install @tanstack/react-query, axios, next-intl, zod, react-hook-form.
-- [ ] 1.5 Root `docker-compose.yml`: services postgres (15, port 5435, volume `genba-pgdata`), backend (port 8086, depends_on postgres), frontend (port 3001). No Adminer. Single dev profile.
+- [ ] 1.4 Initialize Next.js 15 in `genba-frontend/`: TypeScript, App Router, Tailwind CSS, Ant Design 5; configure port 3002; install @tanstack/react-query, axios, next-intl, zod, react-hook-form.
+- [ ] 1.5 Root `docker-compose.yml`: services postgres (15, port 5435, volume `genba-pgdata`), backend (port 8086, depends_on postgres), frontend (port 3002). No Adminer. Single dev profile.
 - [ ] 1.6 Root `start.sh` (mirrors kaisha-03's start.sh pattern at the new ports).
 - [ ] 1.7 Root `.gitignore` covering target/, node_modules/, .next/, .idea/, .env, .env.local, .env.dev, *.log, uploads/, .DS_Store.
-- [ ] 1.8 Root `README.md` with: purpose, ports (3001/8086/5435), `./start.sh` to launch, openspec workflow note, link to https://github.com/lzrmihnea/genba.
+- [ ] 1.8 Root `README.md` with: purpose, ports (3002/8086/5435), `./start.sh` to launch, openspec workflow note, link to https://github.com/lzrmihnea/genba.
 - [ ] 1.9 Confirm `mvn clean compile` (backend) and `npm install && npm run build` (frontend) succeed before any further task.
 
 ## 2. i18n framework
@@ -31,7 +31,7 @@
 ## 5. Spring Security 6 + JWT
 - [ ] 5.1 `JwtTokenProvider` issuing access + refresh tokens (JJWT 0.12.3), configurable expiry via application.yml.
 - [ ] 5.2 `JwtAuthFilter` extending OncePerRequestFilter, validating Authorization header.
-- [ ] 5.3 `SecurityConfig` (Spring Security 6 lambda DSL): stateless, JWT filter inserted before UsernamePasswordAuthenticationFilter, exception entry point returning 401 with JSON body, CORS for http://localhost:3001.
+- [ ] 5.3 `SecurityConfig` (Spring Security 6 lambda DSL): stateless, JWT filter inserted before UsernamePasswordAuthenticationFilter, exception entry point returning 401 with JSON body, CORS for http://localhost:3002.
 - [ ] 5.4 `BCryptPasswordEncoder` bean.
 - [ ] 5.5 Method security with @EnableMethodSecurity + @PreAuthorize on controllers.
 - [ ] 5.6 `OrganizationScopeAspect` (or interceptor) ensuring every multi-tenant query is org-scoped — derive current org from JWT claim or active-org header.
@@ -54,11 +54,11 @@
 ## 8. Seed admin user
 - [ ] 8.1 Liquibase changeset `db.changelog-genba-auth-005-seed.xml`: insert one Organization (`Mihnea's Builds`), one User (email from env var `GENBA_SEED_EMAIL`, password hash computed from env var `GENBA_SEED_PASSWORD` at first boot), link via UserOrganization with org_role=OWNER.
 - [ ] 8.2 `application.yml` documents required env vars; `.env.dev` shipped (gitignored) with safe defaults.
-- [ ] 8.3 Smoke test: bring up docker-compose, log in via /login at localhost:3001, see app shell with empty Projects list.
+- [ ] 8.3 Smoke test: bring up docker-compose, log in via /login at localhost:3002, see app shell with empty Projects list.
 
 ## 9. Verification + spec migration
 - [ ] 9.1 Full TestContainers integration test: login → me → refresh → logout flow.
-- [ ] 9.2 Manual smoke test on local Mac at ports 3001/8086/5435.
+- [ ] 9.2 Manual smoke test on local Mac at ports 3002/8086/5435.
 - [ ] 9.3 Move spec deltas from `openspec/changes/add-auth-foundation/specs/auth-foundation/spec.md` to `openspec/specs/auth-foundation/spec.md` after merge to develop.
 - [ ] 9.4 `openspec validate add-auth-foundation --strict` passes.
 - [ ] 9.5 Archive change after merge.

@@ -4,7 +4,7 @@ Genba is being built as an independent codebase (not a git fork of kaisha) but m
 ## What Changes
 - **ADD**: Maven root `pom.xml` + `genba-backend/` module (Spring Boot 3.1.5, Java 17, packaging jar). Dependencies match kaisha-03's pattern: spring-boot-starter-{web,data-jpa,security,validation,actuator}, springdoc-openapi-starter-webmvc-ui, postgresql, liquibase-core, lombok, mapstruct, jjwt 0.12.3, spring-boot-starter-test, testcontainers.
 - **ADD**: `genba-frontend/` Next.js 15 + React 19 + TypeScript project. Dependencies: ant-design 5, tailwind 4, @tanstack/react-query, axios, next-intl, zod, react-hook-form.
-- **ADD**: root `docker-compose.yml` with services: `postgres` (port 5435, image postgres:15), `backend` (port 8086, depends_on postgres), `frontend` (port 3001). **No Adminer.** Single profile (no staging/prod splits in L0). Persistent named volume `genba-pgdata`.
+- **ADD**: root `docker-compose.yml` with services: `postgres` (port 5435, image postgres:15), `backend` (port 8086, depends_on postgres), `frontend` (port 3002). **No Adminer.** Single profile (no staging/prod splits in L0). Persistent named volume `genba-pgdata`.
 - **ADD**: `application.yml` and `application-dev.yml` for backend; `next.config.ts` and `.env.local.example` for frontend. Pattern referenced from kaisha-03.
 - **ADD**: Liquibase master changelog `db.changelog-master.xml` referencing modular changesets per change-proposal.
 - **ADD**: i18n framework setup — `next-intl` configuration on frontend with EN+RO bundle stubs (`messages/en.json`, `messages/ro.json`); Spring `MessageSource` on backend with `messages_en.properties` + `messages_ro.properties`; `Accept-Language` header parsing.

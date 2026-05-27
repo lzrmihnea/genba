@@ -32,7 +32,7 @@ genba/
 
 | Service          | Port |
 |------------------|-----:|
-| Frontend (Next)  | 3001 |
+| Frontend (Next)  | 3002 |
 | Backend (Spring) | 8086 |
 | PostgreSQL       | 5435 |
 
@@ -48,7 +48,7 @@ cd genba-backend && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 cd genba-frontend && npm install && npm run dev
 ```
 
-Open http://localhost:3001 (frontend) and http://localhost:8086/swagger-ui/index.html (API docs).
+Open http://localhost:3002 (frontend) and http://localhost:8086/swagger-ui/index.html (API docs).
 
 ## Environment variables (dev defaults)
 

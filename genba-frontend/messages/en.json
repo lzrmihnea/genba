@@ -1,0 +1,46 @@
+{
+  "app": {
+    "title": "Genba",
+    "tagline": "Construction-management oversight for homeowners"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "language": {
+      "english": "English",
+      "romanian": "Romanian",
+      "switch": "Language"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "success": "Signed in"
+    },
+    "error": {
+      "invalidCredentials": "Invalid email or password",
+      "userInactive": "This account is inactive",
+      "tokenExpired": "Your session has expired. Please sign in again."
+    }
+  },
+  "home": {
+    "title": "Genba",
+    "description": "Construction-management oversight for homeowners — designed for the Romanian market first, architected to scale internationally.",
+    "status": {
+      "label": "Status:",
+      "value": "Scaffold only. Auth, projects, and bid comparison land in subsequent OpenSpec changes."
+    },
+    "links": {
+      "backendApi": "Backend API",
+      "swaggerUi": "Swagger UI"
+    }
+  }
+}

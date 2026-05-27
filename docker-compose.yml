@@ -1,0 +1,25 @@
+services:
+  postgres:
+    # pgvector/pgvector:pg15 is the official pgvector image built on top of
+    # postgres:15. Drop-in replacement; supplies the `vector` extension that
+    # Liquibase enables on first boot for future semantic-search work.
+    image: pgvector/pgvector:pg15
+    container_name: genba-postgres
+    environment:
+      POSTGRES_DB: genba_db
+      POSTGRES_USER: genba_user
+      POSTGRES_PASSWORD: genba_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - genba-pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genba_user -d genba_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  genba-pgdata:
+    name: genba-pgdata

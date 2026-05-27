@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Master changelog. Each OpenSpec change adds a numbered include directive.
+        Convention: db/changelog/genba/<change-id>/db.changelog-<NNN>-<topic>.xml
+        Numbering is global across changes for clarity in the migration history.
+    -->
+
+    <!-- extensions (runs first; required by VECTOR(n) columns in Phase 1+) -->
+    <include file="db/changelog/genba/extensions/db.changelog-001-pgvector.xml"/>
+
+    <!-- add-auth-foundation (this branch) -->
+    <include file="db/changelog/genba/auth-foundation/db.changelog-001-app-user.xml"/>
+    <include file="db/changelog/genba/auth-foundation/db.changelog-002-role.xml"/>
+    <include file="db/changelog/genba/auth-foundation/db.changelog-003-organization.xml"/>
+    <include file="db/changelog/genba/auth-foundation/db.changelog-004-user-organization.xml"/>
+    <include file="db/changelog/genba/auth-foundation/db.changelog-005-seed.xml"/>
+
+</databaseChangeLog>

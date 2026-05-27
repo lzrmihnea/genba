@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Enables the pgvector extension on the genba database. This must run
+        BEFORE any changeset that creates a column of type VECTOR(n).
+
+        Phase 1 schema (Attachment, Vendor, OfferLine, WBSItem, WBSTemplateItem)
+        reserves `embedding VECTOR(1024) NULL` columns; without this extension
+        those CREATE TABLE statements would fail. Columns stay NULL until the
+        Phase 5 `add-semantic-search` change activates the embedding pipeline.
+
+        The image pgvector/pgvector:pg15 provides the extension binary; this
+        changeset just enables it inside the genba_db database. Idempotent.
+    -->
+
+    <changeSet id="genba-extensions-001-pgvector" author="mihnea">
+        <sql>CREATE EXTENSION IF NOT EXISTS vector;</sql>
+
+        <rollback>
+            <sql>DROP EXTENSION IF EXISTS vector;</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

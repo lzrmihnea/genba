@@ -1,27 +1,30 @@
 "use client";
 
-import { Card, Typography } from "antd";
+import { Card, Flex, Typography } from "antd";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const { Title, Paragraph, Text } = Typography;
 
-export default function Home() {
+export default function Home(): React.ReactElement {
+  const t = useTranslations("home");
+
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
+    <main className="mx-auto max-w-3xl px-6 py-10">
+      <Flex justify="flex-end" className="mb-4">
+        <LanguageSwitcher />
+      </Flex>
       <Card>
-        <Title level={2}>Genba</Title>
-        <Paragraph>
-          Construction-management oversight for homeowners — designed for the
-          Romanian market first, architected to scale internationally.
+        <Title level={2}>{t("title")}</Title>
+        <Paragraph>{t("description")}</Paragraph>
+        <Paragraph type="secondary">
+          <Text strong>{t("status.label")}</Text> {t("status.value")}
         </Paragraph>
         <Paragraph type="secondary">
-          <Text strong>Status:</Text> scaffold only. Auth, projects, and bid
-          comparison land in subsequent OpenSpec changes.
+          {t("links.backendApi")}: <Text code>http://localhost:8086/api</Text>
         </Paragraph>
         <Paragraph type="secondary">
-          Backend API: <Text code>http://localhost:8086/api</Text>
-        </Paragraph>
-        <Paragraph type="secondary">
-          Swagger UI:{" "}
+          {t("links.swaggerUi")}:{" "}
           <Text code>http://localhost:8086/swagger-ui/index.html</Text>
         </Paragraph>
       </Card>

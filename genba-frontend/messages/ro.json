@@ -1,0 +1,46 @@
+{
+  "app": {
+    "title": "Genba",
+    "tagline": "Supraveghere construcție pentru beneficiari"
+  },
+  "common": {
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "delete": "Șterge",
+    "edit": "Editează",
+    "confirm": "Confirmă",
+    "loading": "Se încarcă…",
+    "error": "A apărut o eroare",
+    "language": {
+      "english": "Engleză",
+      "romanian": "Română",
+      "switch": "Limbă"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Autentificare",
+      "email": "Email",
+      "password": "Parolă",
+      "submit": "Autentificare",
+      "success": "Autentificat"
+    },
+    "error": {
+      "invalidCredentials": "Email sau parolă incorecte",
+      "userInactive": "Acest cont este inactiv",
+      "tokenExpired": "Sesiunea a expirat. Te rugăm să te autentifici din nou."
+    }
+  },
+  "home": {
+    "title": "Genba",
+    "description": "Supraveghere a lucrărilor de construcție pentru beneficiari — gândită pentru piața din România, arhitectată să scaleze internațional.",
+    "status": {
+      "label": "Status:",
+      "value": "Doar schela. Autentificarea, proiectele și compararea ofertelor vor sosi în propunerile OpenSpec următoare."
+    },
+    "links": {
+      "backendApi": "API backend",
+      "swaggerUi": "Swagger UI"
+    }
+  }
+}

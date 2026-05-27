@@ -204,6 +204,23 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <!--
+                Surefire forks tests into a new JVM that does NOT inherit the
+                parent shell's env vars by default. TestContainers needs
+                DOCKER_HOST to locate the Docker socket on Docker Desktop for
+                Mac (where /var/run/docker.sock does not exist). The empty
+                default lets CI pass DOCKER_HOST via env without changing pom.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <DOCKER_HOST>${env.DOCKER_HOST}</DOCKER_HOST>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

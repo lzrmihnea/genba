@@ -9,6 +9,18 @@ import type { ApiError, RefreshResponse } from "@/lib/auth/types";
 const baseURL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8086/api";
 
+/**
+ * Key used by AuthProvider to persist the user's active organization across
+ * page loads. We read it on every request to inject the X-Genba-Org-Id header
+ * the backend uses for org scoping.
+ */
+const ACTIVE_ORG_KEY = "genba.activeOrg";
+
+function readActiveOrgId(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(ACTIVE_ORG_KEY);
+}
+
 export const apiClient = axios.create({
   baseURL,
   timeout: 30_000,
@@ -19,6 +31,10 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = tokenStorage.getAccess();
   if (token) {
     config.headers.set("Authorization", `Bearer ${token}`);
+  }
+  const orgId = readActiveOrgId();
+  if (orgId && !config.headers.has("X-Genba-Org-Id")) {
+    config.headers.set("X-Genba-Org-Id", orgId);
   }
   return config;
 });

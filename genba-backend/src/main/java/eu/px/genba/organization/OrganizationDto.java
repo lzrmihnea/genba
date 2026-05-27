@@ -8,5 +8,9 @@ import lombok.Builder;
 public record OrganizationDto(
         UUID id,
         String name,
+        String countryCode,
+        String currencyCode,
+        String vatRegime,
+        UUID permitWorkflowTemplateId,
         OffsetDateTime createdAt) {
 }

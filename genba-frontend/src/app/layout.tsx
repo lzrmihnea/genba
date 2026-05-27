@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { QueryProvider } from "@/lib/api/QueryProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import "./globals.css";
 
@@ -21,7 +22,9 @@ export default async function RootLayout({
       <body className="min-h-screen bg-neutral-50 text-neutral-900 antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AntdRegistry>
-            <AuthProvider>{children}</AuthProvider>
+            <QueryProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </QueryProvider>
           </AntdRegistry>
         </NextIntlClientProvider>
       </body>

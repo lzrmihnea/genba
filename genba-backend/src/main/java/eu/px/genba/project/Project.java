@@ -1,8 +1,10 @@
-package eu.px.genba.organization;
+package eu.px.genba.project;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,55 +16,48 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
- * Tenant boundary. Every domain entity owned by an Organization carries
- * {@code org_id}. Soft-deleted via {@link #deletedAt}.
- *
- * <p>Locale fields (country, currency, vat_regime, permit_workflow_template_id)
- * are DEFAULTS new Projects inherit at creation — not constraints. Projects
- * own their cloned-from-template structure and may freely deviate.
+ * One house build. Soft-deleted via {@link #deletedAt}.
  */
 @Entity
-@Table(name = "organization")
+@Table(name = "project")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Organization {
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
+    @Column(name = "org_id", nullable = false)
+    private UUID orgId;
+
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @Column(name = "country_code", nullable = false, length = 2)
-    @Builder.Default
-    private String countryCode = "RO";
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
-    @Column(name = "currency_code", nullable = false, length = 3)
-    @Builder.Default
-    private String currencyCode = "RON";
+    @Column(name = "address", length = 512)
+    private String address;
 
-    @Column(name = "vat_regime", nullable = false, length = 32)
-    @Builder.Default
-    private String vatRegime = "RO_STANDARD";
+    @Column(name = "base_currency", nullable = false, length = 3)
+    private String baseCurrency;
 
-    /**
-     * Default PermitWorkflowTemplate new Projects clone from. NULL until
-     * Phase 3 (add-permit-workflow) populates the template table. Stays
-     * nullable so existing Orgs created before that change keep working.
-     */
-    @Column(name = "permit_workflow_template_id")
-    private UUID permitWorkflowTemplateId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 32)
+    @Builder.Default
+    private ProjectStatus status = ProjectStatus.PLANNING;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -71,6 +66,10 @@ public class Organization {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
+    @CreatedBy
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Polymorphic attachment table. Files / pasted text / links can hang off
+        any domain entity via {attachable_type, attachable_id}. The pair is NOT
+        a foreign key — parent entities use soft-delete so dangling references
+        are bounded; a Phase 5 sweep job cleans orphans when needed.
+
+        Embedding columns are reserved here per the modular-templates and
+        semantic-search scaffolding decisions; they remain NULL until the
+        Phase 5 add-semantic-search change activates the pipeline.
+    -->
+
+    <changeSet id="genba-core-003-attachment" author="mihnea">
+        <createTable tableName="attachment">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="org_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_attachment_org"
+                             references="organization(id)"/>
+            </column>
+            <column name="attachable_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attachable_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kind" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_channel_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_attachment_source_channel"
+                             references="attachment_source_channel(id)"/>
+            </column>
+            <column name="file_url" type="VARCHAR(1024)"/>
+            <column name="raw_text" type="TEXT"/>
+            <column name="original_filename" type="VARCHAR(512)"/>
+            <column name="mime_type" type="VARCHAR(128)"/>
+            <column name="byte_size" type="BIGINT"/>
+            <column name="uploaded_by" type="UUID">
+                <constraints foreignKeyName="fk_attachment_uploaded_by"
+                             references="app_user(id)"/>
+            </column>
+            <column name="uploaded_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <!--
+                Reserved for add-semantic-search (Phase 5). Stays NULL on every
+                row until that change wires the embedding worker. VECTOR(1024)
+                matches the dimensions chosen for local + Voyage + truncated
+                OpenAI providers.
+            -->
+            <column name="embedding" type="VECTOR(1024)"/>
+            <column name="embedding_source_hash" type="VARCHAR(64)"/>
+        </createTable>
+
+        <createIndex tableName="attachment" indexName="idx_attachment_attachable">
+            <column name="attachable_type"/>
+            <column name="attachable_id"/>
+        </createIndex>
+
+        <createIndex tableName="attachment" indexName="idx_attachment_org_uploaded">
+            <column name="org_id"/>
+            <column name="uploaded_at" descending="true"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="attachment"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

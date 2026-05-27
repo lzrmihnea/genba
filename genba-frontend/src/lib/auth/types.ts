@@ -12,6 +12,9 @@ export interface User {
 export interface UserOrganization {
   organizationId: string;
   organizationName: string;
+  countryCode: string;
+  currencyCode: string;
+  vatRegime: string;
   orgRole: OrgRole;
 }
 

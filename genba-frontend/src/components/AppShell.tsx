@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeOutlined, LogoutOutlined, ProjectOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, LogoutOutlined, ProjectOutlined, SettingOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Flex, Layout, Menu, type MenuProps, Typography } from "antd";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -27,6 +27,11 @@ export function AppShell({ children }: { children: React.ReactNode }): React.Rea
       key: "/projects",
       icon: <ProjectOutlined />,
       label: <Link href="/projects">{locale === "ro" ? "Proiecte" : "Projects"}</Link>,
+    },
+    {
+      key: "/settings/vendors",
+      icon: <ShopOutlined />,
+      label: <Link href="/settings/vendors">{locale === "ro" ? "Furnizori" : "Vendors"}</Link>,
     },
     {
       key: "/settings/organization",

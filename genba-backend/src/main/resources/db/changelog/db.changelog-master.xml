@@ -27,4 +27,9 @@
     <include file="db/changelog/genba/genba-core/db.changelog-003-attachment.xml"/>
     <include file="db/changelog/genba/genba-core/db.changelog-004-project.xml"/>
 
+    <!-- add-vendors-and-offers -->
+    <include file="db/changelog/genba/vendors-and-offers/db.changelog-005-vendor.xml"/>
+    <include file="db/changelog/genba/vendors-and-offers/db.changelog-006-offer.xml"/>
+    <include file="db/changelog/genba/vendors-and-offers/db.changelog-007-offer-line.xml"/>
+
 </databaseChangeLog>

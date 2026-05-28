@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 import { AttachmentList } from "@/components/AttachmentList";
 import { AttachmentUpload } from "@/components/AttachmentUpload";
+import { OfferListPanel } from "@/components/OfferListPanel";
 import { projectsApi } from "@/lib/projects/api";
 import type { ProjectStatus } from "@/lib/projects/types";
 
@@ -82,14 +83,7 @@ export default function ProjectDetailPage(): React.ReactElement {
             {
               key: "offers",
               label: locale === "ro" ? "Oferte" : "Offers",
-              disabled: true,
-              children: (
-                <Typography.Text type="secondary">
-                  {locale === "ro"
-                    ? "Disponibil în add-vendors-and-offers (Phase 1)."
-                    : "Lands with add-vendors-and-offers (Phase 1)."}
-                </Typography.Text>
-              ),
+              children: <OfferListPanel projectId={data.id} />,
             },
             {
               key: "wbs",

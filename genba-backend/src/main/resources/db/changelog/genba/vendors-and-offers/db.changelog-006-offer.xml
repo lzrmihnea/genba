@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="genba-vno-006-offer" author="mihnea">
+        <createTable tableName="offer">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="org_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_offer_org"
+                             references="organization(id)"/>
+            </column>
+            <column name="project_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_offer_project"
+                             references="project(id)"/>
+            </column>
+            <column name="vendor_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_offer_vendor"
+                             references="vendor(id)"/>
+            </column>
+            <column name="label" type="VARCHAR(255)"/>
+            <column name="received_at" type="DATE"/>
+            <column name="valid_until" type="DATE"/>
+            <column name="currency_code" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Cached aggregate of OfferLines; recomputed server-side on every line mutation. -->
+            <column name="total_amount_excl_vat" type="NUMERIC(14,2)" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount_incl_vat" type="NUMERIC(14,2)" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(32)" defaultValue="DRAFT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notes" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints foreignKeyName="fk_offer_created_by" references="app_user(id)"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <createIndex tableName="offer" indexName="idx_offer_project_status">
+            <column name="project_id"/>
+            <column name="status"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="offer"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

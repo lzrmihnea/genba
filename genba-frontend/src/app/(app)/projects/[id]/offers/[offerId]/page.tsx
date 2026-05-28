@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { AttachmentList } from "@/components/AttachmentList";
 import { AttachmentUpload } from "@/components/AttachmentUpload";
 import { OfferLineGrid } from "@/components/OfferLineGrid";
+import { RecommendationsPanel } from "@/components/RecommendationsPanel";
 import { offersApi } from "@/lib/offers/api";
 import { OFFER_STATUS_TRANSITIONS, type OfferStatus } from "@/lib/offers/types";
 
@@ -104,7 +105,16 @@ export default function OfferEditorPage(): React.ReactElement {
             {
               key: "lines",
               label: locale === "ro" ? "Linii" : "Lines",
-              children: <OfferLineGrid offer={offer} />,
+              children: (
+                <Flex gap="large" align="flex-start" wrap="wrap">
+                  <div style={{ flex: "1 1 560px", minWidth: 0 }}>
+                    <OfferLineGrid offer={offer} />
+                  </div>
+                  <div style={{ flex: "0 0 320px" }}>
+                    <RecommendationsPanel projectId={projectId} offerId={offer.id} />
+                  </div>
+                </Flex>
+              ),
             },
             {
               key: "attachments",

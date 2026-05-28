@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(GenbaException.class)
     public ResponseEntity<ApiError> handleGenba(GenbaException ex, HttpServletRequest request) {
-        return build(ex, HttpStatus.BAD_REQUEST, request);
+        return build(ex, HttpStatus.valueOf(ex.getHttpStatus()), request);
     }
 
     @ExceptionHandler(Exception.class)

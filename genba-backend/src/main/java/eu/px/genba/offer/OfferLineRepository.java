@@ -17,6 +17,13 @@ public interface OfferLineRepository extends JpaRepository<OfferLine, UUID> {
             """)
     List<OfferLine> findByOffer(UUID offerId);
 
+    @Query("""
+            SELECT l FROM OfferLine l
+            WHERE l.offerId IN :offerIds
+            ORDER BY l.lineOrder ASC
+            """)
+    List<OfferLine> findByOfferIds(List<UUID> offerIds);
+
     Optional<OfferLine> findByIdAndOfferId(UUID id, UUID offerId);
 
     /** Highest line_order already present on the offer; returns 0 when empty. */

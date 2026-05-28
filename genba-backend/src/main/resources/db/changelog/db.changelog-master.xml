@@ -32,4 +32,7 @@
     <include file="db/changelog/genba/vendors-and-offers/db.changelog-006-offer.xml"/>
     <include file="db/changelog/genba/vendors-and-offers/db.changelog-007-offer-line.xml"/>
 
+    <!-- add-bid-comparison-mvp -->
+    <include file="db/changelog/genba/bid-comparison/db.changelog-008-match-group.xml"/>
+
 </databaseChangeLog>

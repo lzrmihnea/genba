@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="genba-vno-005-vendor" author="mihnea">
+        <createTable tableName="vendor">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="org_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_vendor_org"
+                             references="organization(id)"/>
+            </column>
+            <!-- Project-scoped vendors are allowed for one-off suppliers; most are org-scoped. -->
+            <column name="project_id" type="UUID">
+                <constraints foreignKeyName="fk_vendor_project" references="project(id)"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_name" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(64)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <!-- RO: CUI/CIF; left a generic VARCHAR so other locales work later. -->
+            <column name="vat_id" type="VARCHAR(64)"/>
+            <column name="default_retention_pct" type="NUMERIC(5,2)"/>
+            <column name="notes" type="TEXT"/>
+            <!-- Reserved for add-semantic-search Phase 5; stays NULL until then. -->
+            <column name="embedding" type="VECTOR(1024)"/>
+            <column name="embedding_source_hash" type="VARCHAR(64)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints foreignKeyName="fk_vendor_created_by" references="app_user(id)"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <createIndex tableName="vendor" indexName="idx_vendor_org_active">
+            <column name="org_id"/>
+            <column name="deleted_at"/>
+        </createIndex>
+        <createIndex tableName="vendor" indexName="idx_vendor_project_active">
+            <column name="project_id"/>
+            <column name="deleted_at"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="vendor"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

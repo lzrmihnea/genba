@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="genba-vno-007-offer-line" author="mihnea">
+        <createTable tableName="offer_line">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <!-- ON DELETE CASCADE: when an Offer is HARD-deleted the lines go with it. Soft-delete leaves lines intact. -->
+            <column name="offer_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_offer_line_offer"
+                             references="offer(id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="line_order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="qty" type="NUMERIC(14,4)" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit" type="VARCHAR(32)" defaultValue="buc">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_price" type="NUMERIC(14,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vat_rate" type="NUMERIC(5,2)" defaultValueNumeric="19.00">
+                <constraints nullable="false"/>
+            </column>
+            <column name="line_total_excl_vat" type="NUMERIC(14,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="line_total_incl_vat" type="NUMERIC(14,2)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- FK to wbs_item is added in Phase 2 (add-wbs-catalog). -->
+            <column name="wbs_item_id" type="UUID"/>
+            <!-- Phase 1 user-driven matching primitive; Phase 2 obsoletes via WBSItem. -->
+            <column name="normalized_key" type="VARCHAR(255)"/>
+            <column name="notes" type="TEXT"/>
+            <!-- Reserved for add-semantic-search Phase 5; stays NULL until then. -->
+            <column name="embedding" type="VECTOR(1024)"/>
+            <column name="embedding_source_hash" type="VARCHAR(64)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="offer_line" indexName="idx_offer_line_offer_order">
+            <column name="offer_id"/>
+            <column name="line_order"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="offer_line"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

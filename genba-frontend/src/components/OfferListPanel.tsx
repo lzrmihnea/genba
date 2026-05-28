@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, TableOutlined } from "@ant-design/icons";
 import { Button, Empty, Flex, Form, Input, Modal, Spin, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -84,7 +84,12 @@ export function OfferListPanel({ projectId }: OfferListPanelProps): React.ReactE
 
   return (
     <div>
-      <Flex justify="flex-end" className="mb-3">
+      <Flex justify="flex-end" gap="small" className="mb-3">
+        {(data?.length ?? 0) >= 2 && (
+          <Button icon={<TableOutlined />} onClick={() => router.push(`/projects/${projectId}/compare`)}>
+            {locale === "ro" ? "Compară ofertele" : "Compare offers"}
+          </Button>
+        )}
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
           {locale === "ro" ? "Ofertă nouă" : "New offer"}
         </Button>
